@@ -1,0 +1,16 @@
+
+.main-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    flex-direction: column;
+}
+
+.img__star{
+    width: 100%;
+    filter: url('#dopplerOverlay');
+}
+
+mat-slider {
+    width: 100%;
+}
