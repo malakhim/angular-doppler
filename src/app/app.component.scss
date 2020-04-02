@@ -1,14 +1,38 @@
 
 .main-container {
     display: flex;
-    width: 100%;
+    max-width: 100%;
     align-items: center;
     flex-direction: column;
+}
+
+.form {
+    width: 80%;
+    margin: auto;
+}
+
+.form__input {
+    display:flex;
+    justify-content: center;
+
 }
 
 .img__star{
     width: 100%;
     filter: url('#dopplerOverlay');
+}
+
+.slider-labels {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.button-container{
+    display:flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    width:100%;
 }
 
 mat-slider {

@@ -1,29 +1,53 @@
 
 <div class="main-container">
     <header>
-        The Doppler Effect Simulator!
+        <h1>The Doppler Effect Simulator!</h1>
       </header>
   <figure class="img">
     <img src='assets/star-small.png' class="img__star">
   </figure>
-  <form class="form">
-    <mat-form-field class="form__field" appearance="outline">
+ 
+</div>
+<form class="form">
+    <mat-form-field class="form__input" appearance="outline">
       <mat-label>Velocity (km/s)</mat-label>
-        <input matInput name="velocityInput" [value]="velocity" [placeholder]="velocity" (change)="updateDopplerHue($event.target.value)" class="form__input" value="0.0" type="number" min="-100.0" max="100.0" [step]="getSliderStepSize(matSlider.percent * 100)">
+        <input matInput name="velocityInput" [value]="velocity.toFixed(2)" [placeholder]="velocity" (change)="updateDopplerHue($event.target.value)" class="form__input" value="0.0" type="number" min="-100.0" max="100.0" [step]="getSliderStepSize(matSlider.percent * 100)">
     </mat-form-field><br/>
+    <div class="slider-labels">
+      <div>{{templateMinVelocity}} km/s</div>
+      <div>0</div>
+      <div>+{{templateMaxVelocity}} km/s</div>
+    </div>
     <mat-slider 
-      (input)="updateDopplerHue($event.value)" 
+      (input)="updateDopplerHue($event.value); setButtonsActive($event.value)" 
       thumbLabel 
       name="velocitySlider"
       #matSlider
       [displayWith]="formatLabel"
-      min="-100" 
-      max="100" 
+      min="{{templateMinVelocity}}" 
+      max="{{templateMaxVelocity}}" 
       [step]="getSliderStepSize(matSlider.percent * 100)" 
       [value]="velocity"></mat-slider>
-  </form>
-</div>
 
+    <div class="button-container">
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="moveSlider(-getSliderStepSize(matSlider.percent * 100)); updateDopplerHue(velocity)"
+        [disabled]="leftButtonDisabled"
+      >
+        << Decrease velocity by {{getSliderStepSize(matSlider.percent * 100)}}
+      </button> 
+      <button 
+        mat-raised-button 
+        color="warn" 
+        (click)="moveSlider(getSliderStepSize(matSlider.percent * 100)); updateDopplerHue(velocity)"
+        [disabled]="rightButtonDisabled"
+      >
+        Increase velocity by {{getSliderStepSize(matSlider.percent * 100)}} >>
+      </button>
+    </div>
+  </form>
 <svg>
   <filter id="dopplerOverlay">
     <feColorMatrix

@@ -2,6 +2,10 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 const BASE_CONSTANT = 1.02;
 
+const MAX_VELOCITY = 100;
+
+const MIN_VELOCITY = -100;
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -10,9 +14,25 @@ const BASE_CONSTANT = 1.02;
 })
 export class AppComponent implements OnInit{
   velocity = 0;
+  readonly templateMaxVelocity = MAX_VELOCITY;
+  readonly templateMinVelocity = MIN_VELOCITY;
 
+    dopplerHue = '';
+    leftButtonDisabled = false;
+    rightButtonDisabled = false;
 
-  /*
+    readonly feColorIdentityMatrix: FeColorMatrix =  {
+      R: [1, 0, 0, 0, 0],
+      G: [0, 1, 0, 0, 0],
+      B: [0, 0, 1, 0, 0],
+      A: [0, 0, 0, 1, 0],
+    };
+
+    ngOnInit(){
+      this.dopplerHue = this.transformFeColorMatrixToString(this.feColorIdentityMatrix);
+    }
+
+     /*
     This defines what colours we're filtering the initial star-small.png image by.
 
     We get the feColorMatrix 
@@ -54,20 +74,6 @@ export class AppComponent implements OnInit{
     for manipulation of a particular hue directly.
 
     */
-
-    dopplerHue = '';
-
-    readonly feColorIdentityMatrix: FeColorMatrix =  {
-      R: [1, 0, 0, 0, 0],
-      G: [0, 1, 0, 0, 0],
-      B: [0, 0, 1, 0, 0],
-      A: [0, 0, 0, 1, 0],
-    };
-
-    ngOnInit(){
-      this.dopplerHue = this.transformFeColorMatrixToString(this.feColorIdentityMatrix);
-    }
-
     updateDopplerHue(velocity:number){
         this.velocity = velocity;
 
@@ -84,7 +90,7 @@ export class AppComponent implements OnInit{
         this.dopplerHue = this.transformFeColorMatrixToString(channelsCopy);
     }
 
-    transformFeColorMatrixToString(colourChannels: FeColorMatrix){
+    private transformFeColorMatrixToString(colourChannels: FeColorMatrix){
       return [
         colourChannels.R.join(' '), 
         colourChannels.G.join(' '),
@@ -94,11 +100,38 @@ export class AppComponent implements OnInit{
     }
 
     getSliderStepSize(sliderValue: number){
+      console.log(sliderValue);
       return +Math.pow(BASE_CONSTANT, sliderValue).toFixed(2);
     }
 
-    formatLabel(e) {
-      return `${e} km/s`;
+    formatLabel(value: string) {
+      return `${value} km/s`;
+    }
+
+    setButtonsActive(sliderValue: number): void {
+      if(sliderValue >= MAX_VELOCITY) {
+        this.rightButtonDisabled = true;
+      } else {
+        this.rightButtonDisabled = false;
+      }
+
+      if(sliderValue <= MIN_VELOCITY) {
+        this.leftButtonDisabled = true;
+      } else {
+        this.leftButtonDisabled = false;
+
+      }
+    }
+
+    moveSlider(amount: number) {
+      if(this.velocity + amount > MAX_VELOCITY){
+        this.velocity = MAX_VELOCITY;
+      } else if(this.velocity + amount < MIN_VELOCITY){
+        this.velocity = MIN_VELOCITY;
+      } else {
+        this.velocity += amount;
+      }
+      this.setButtonsActive(this.velocity);
     }
 }
 
